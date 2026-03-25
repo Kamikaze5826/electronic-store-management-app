@@ -23,6 +23,7 @@ import com.electrostore.dao.ProductDao;
 import com.electrostore.model.Product;
 
 public class ProductPanel extends JPanel {
+
     private final ProductDao productDao = new ProductDao();
     private final Runnable onDataChanged;
     private final NumberFormat priceDisplayFormat = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
@@ -36,7 +37,7 @@ public class ProductPanel extends JPanel {
     private final JTextField searchField = new JTextField(20);
 
     private final DefaultTableModel tableModel = new DefaultTableModel(
-        new String[]{"ID", "Ten", "Hang", "Loai", "Gia", "Ton kho"}, 0
+            new String[]{"ID", "Ten", "Hang", "Loai", "Gia", "Ton kho"}, 0
     ) {
         @Override
         public boolean isCellEditable(int row, int column) {

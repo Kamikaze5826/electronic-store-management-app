@@ -27,6 +27,7 @@ import com.electrostore.model.OrderSummary;
 import com.electrostore.service.OrderService;
 
 public class CustomerPanel extends JPanel {
+
     private final CustomerDao customerDao = new CustomerDao();
     private final OrderService orderService = new OrderService();
     private final Runnable onDataChanged;
@@ -41,7 +42,7 @@ public class CustomerPanel extends JPanel {
     private final JTextField searchField = new JTextField(20);
 
     private final DefaultTableModel tableModel = new DefaultTableModel(
-        new String[]{"ID", "Ho ten", "Dien thoai", "Email", "Dia chi"}, 0
+            new String[]{"ID", "Ho ten", "Dien thoai", "Email", "Dia chi"}, 0
     ) {
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -52,7 +53,7 @@ public class CustomerPanel extends JPanel {
     private final JTable table = new JTable(tableModel);
 
     private final DefaultTableModel orderHistoryModel = new DefaultTableModel(
-        new String[]{"Ma HD", "Tong tien", "Thoi gian"}, 0
+            new String[]{"Ma HD", "Tong tien", "Thoi gian"}, 0
     ) {
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -61,7 +62,7 @@ public class CustomerPanel extends JPanel {
     };
 
     private final DefaultTableModel invoiceDetailModel = new DefaultTableModel(
-        new String[]{"San pham", "So luong", "Don gia", "Thanh tien"}, 0
+            new String[]{"San pham", "So luong", "Don gia", "Thanh tien"}, 0
     ) {
         @Override
         public boolean isCellEditable(int row, int column) {
