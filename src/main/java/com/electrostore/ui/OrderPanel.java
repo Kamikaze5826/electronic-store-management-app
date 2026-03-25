@@ -32,6 +32,7 @@ import com.electrostore.model.Product;
 import com.electrostore.service.OrderService;
 
 public class OrderPanel extends JPanel {
+
     private final OrderService orderService = new OrderService();
     private final Runnable onDataChanged;
     private final NumberFormat vnCurrency = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
@@ -48,7 +49,7 @@ public class OrderPanel extends JPanel {
     private List<Product> allProducts = new ArrayList<>();
 
     private final DefaultTableModel cartModel = new DefaultTableModel(
-        new String[]{"ProductID", "Ten san pham", "So luong", "Don gia", "Thanh tien"}, 0
+            new String[]{"ProductID", "Ten san pham", "So luong", "Don gia", "Thanh tien"}, 0
     ) {
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -57,7 +58,7 @@ public class OrderPanel extends JPanel {
     };
 
     private final DefaultTableModel recentOrderModel = new DefaultTableModel(
-        new String[]{"Ma HD", "Khach hang", "Tong tien", "Thoi gian"}, 0
+            new String[]{"Ma HD", "Khach hang", "Tong tien", "Thoi gian"}, 0
     ) {
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -97,8 +98,7 @@ public class OrderPanel extends JPanel {
         cartTable.getColumnModel().getColumn(3).setCellRenderer(currencyRenderer);
         cartTable.getColumnModel().getColumn(4).setCellRenderer(currencyRenderer);
 
-        reloadCombos();
-        loadRecentOrders();
+        refreshData();
     }
 
     private JPanel buildTopPanel() {
@@ -152,10 +152,7 @@ public class OrderPanel extends JPanel {
 
         addItemBtn.addActionListener(e -> addItemToCart());
         removeItemBtn.addActionListener(e -> removeSelectedCartItem());
-        reloadBtn.addActionListener(e -> {
-            reloadCombos();
-            loadRecentOrders();
-        });
+        reloadBtn.addActionListener(e -> refreshData());
 
         JPanel line3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         line3.add(addItemBtn);
@@ -167,6 +164,11 @@ public class OrderPanel extends JPanel {
         topPanel.add(line3);
 
         return topPanel;
+    }
+
+    public void refreshData() {
+        reloadCombos();
+        loadRecentOrders();
     }
 
     private JPanel buildBottomPanel() {
@@ -318,8 +320,6 @@ public class OrderPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Luu hoa don thanh cong");
 
             clearCart();
-            reloadCombos();
-            loadRecentOrders();
             onDataChanged.run();
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(this, "Loi tao hoa don: " + ex.getMessage());
