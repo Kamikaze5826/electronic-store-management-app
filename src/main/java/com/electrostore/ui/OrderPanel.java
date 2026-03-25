@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -38,6 +39,13 @@ public class OrderPanel extends JPanel {
     private final JComboBox<Customer> customerCombo = new JComboBox<>();
     private final JComboBox<Product> productCombo = new JComboBox<>();
     private final JSpinner quantitySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
+    private final JTextField customerCodeSearchField = new JTextField(10);
+    private final JTextField customerNameSearchField = new JTextField(14);
+    private final JTextField productCodeSearchField = new JTextField(10);
+    private final JTextField productNameSearchField = new JTextField(14);
+
+    private List<Customer> allCustomers = new ArrayList<>();
+    private List<Product> allProducts = new ArrayList<>();
 
     private final DefaultTableModel cartModel = new DefaultTableModel(
         new String[]{"ProductID", "Ten san pham", "So luong", "Don gia", "Thanh tien"}, 0
@@ -100,10 +108,41 @@ public class OrderPanel extends JPanel {
         JPanel line1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         line1.add(new JLabel("Khach hang:"));
         line1.add(customerCombo);
+        line1.add(new JLabel("Ma KH:"));
+        line1.add(customerCodeSearchField);
+        line1.add(new JLabel("Ten KH:"));
+        line1.add(customerNameSearchField);
+
+        JButton searchCustomerBtn = new JButton("Loc KH");
+        JButton clearCustomerFilterBtn = new JButton("Bo loc KH");
+        searchCustomerBtn.addActionListener(e -> applyCustomerFilter());
+        clearCustomerFilterBtn.addActionListener(e -> {
+            customerCodeSearchField.setText("");
+            customerNameSearchField.setText("");
+            applyCustomerFilter();
+        });
+        line1.add(searchCustomerBtn);
+        line1.add(clearCustomerFilterBtn);
 
         JPanel line2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         line2.add(new JLabel("San pham:"));
         line2.add(productCombo);
+        line2.add(new JLabel("Ma SP:"));
+        line2.add(productCodeSearchField);
+        line2.add(new JLabel("Ten SP:"));
+        line2.add(productNameSearchField);
+
+        JButton searchProductBtn = new JButton("Loc SP");
+        JButton clearProductFilterBtn = new JButton("Bo loc SP");
+        searchProductBtn.addActionListener(e -> applyProductFilter());
+        clearProductFilterBtn.addActionListener(e -> {
+            productCodeSearchField.setText("");
+            productNameSearchField.setText("");
+            applyProductFilter();
+        });
+        line2.add(searchProductBtn);
+        line2.add(clearProductFilterBtn);
+
         line2.add(new JLabel("So luong:"));
         line2.add(quantitySpinner);
 
@@ -155,17 +194,39 @@ public class OrderPanel extends JPanel {
     }
 
     private void reloadCombos() {
+        allCustomers = orderService.getCustomers();
+        allProducts = orderService.getInStockProducts();
+        applyCustomerFilter();
+        applyProductFilter();
+    }
+
+    private void applyCustomerFilter() {
+        String customerCodeKeyword = customerCodeSearchField.getText().trim();
+        String customerNameKeyword = customerNameSearchField.getText().trim().toLowerCase();
+
         customerCombo.removeAllItems();
-        productCombo.removeAllItems();
-
-        List<Customer> customers = orderService.getCustomers();
-        for (Customer c : customers) {
-            customerCombo.addItem(c);
+        for (Customer c : allCustomers) {
+            boolean matchedCode = customerCodeKeyword.isEmpty() || String.valueOf(c.getId()).contains(customerCodeKeyword);
+            boolean matchedName = customerNameKeyword.isEmpty() || c.getFullName().toLowerCase().contains(customerNameKeyword);
+            boolean matched = matchedCode && matchedName;
+            if (matched) {
+                customerCombo.addItem(c);
+            }
         }
+    }
 
-        List<Product> products = orderService.getInStockProducts();
-        for (Product p : products) {
-            productCombo.addItem(p);
+    private void applyProductFilter() {
+        String productCodeKeyword = productCodeSearchField.getText().trim();
+        String productNameKeyword = productNameSearchField.getText().trim().toLowerCase();
+
+        productCombo.removeAllItems();
+        for (Product p : allProducts) {
+            boolean matchedCode = productCodeKeyword.isEmpty() || String.valueOf(p.getId()).contains(productCodeKeyword);
+            boolean matchedName = productNameKeyword.isEmpty() || p.getName().toLowerCase().contains(productNameKeyword);
+            boolean matched = matchedCode && matchedName;
+            if (matched) {
+                productCombo.addItem(p);
+            }
         }
     }
 

@@ -31,7 +31,14 @@ public class ProductDao {
 
     public List<Product> searchByKeyword(String keyword) {
         String sql = "SELECT id, name, brand, category, price, stock " +
-            "FROM products WHERE is_active = 1 AND (name LIKE ? OR brand LIKE ? OR category LIKE ?) ORDER BY id DESC";
+            "FROM products WHERE is_active = 1 AND (" +
+            "CAST(id AS CHAR) LIKE ? OR " +
+            "name LIKE ? OR " +
+            "brand LIKE ? OR " +
+            "category LIKE ? OR " +
+            "CAST(price AS CHAR) LIKE ? OR " +
+            "CAST(stock AS CHAR) LIKE ?" +
+            ") ORDER BY id DESC";
         List<Product> products = new ArrayList<>();
 
         try (Connection connection = DbConnection.getConnection();
@@ -41,6 +48,9 @@ public class ProductDao {
             ps.setString(1, pattern);
             ps.setString(2, pattern);
             ps.setString(3, pattern);
+            ps.setString(4, pattern);
+            ps.setString(5, pattern);
+            ps.setString(6, pattern);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
