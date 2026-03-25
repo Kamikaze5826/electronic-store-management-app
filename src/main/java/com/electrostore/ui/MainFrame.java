@@ -6,6 +6,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -13,15 +15,20 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
+
+import com.electrostore.config.DbConnection;
 
 public class MainFrame extends JFrame {
 
     private static final String HOME_CARD = "home";
     private static final String MANAGEMENT_CARD = "management";
     private static final String DATABASE_CARD = "database";
+    private final JPanel managementHost = new JPanel(new BorderLayout());
+    private boolean managementInitialized;
 
     public MainFrame() {
         setTitle("Quan ly cua hang do dien tu");
@@ -34,11 +41,10 @@ public class MainFrame extends JFrame {
         JPanel rootPanel = new JPanel(cardLayout);
 
         JPanel homePanel = createHomePanel(cardLayout, rootPanel);
-        JPanel managementPanel = createManagementPanel(cardLayout, rootPanel);
         JPanel databasePanel = createDatabasePanel(cardLayout, rootPanel);
 
         rootPanel.add(homePanel, HOME_CARD);
-        rootPanel.add(managementPanel, MANAGEMENT_CARD);
+        rootPanel.add(managementHost, MANAGEMENT_CARD);
         rootPanel.add(databasePanel, DATABASE_CARD);
 
         add(rootPanel, BorderLayout.CENTER);
@@ -63,7 +69,7 @@ public class MainFrame extends JFrame {
         manageButton.setMaximumSize(new Dimension(220, 46));
         manageButton.setFocusPainted(false);
         manageButton.setFont(new Font("SansSerif", Font.BOLD, 16));
-        manageButton.addActionListener(e -> cardLayout.show(rootPanel, MANAGEMENT_CARD));
+        manageButton.addActionListener(e -> openManagementScreen(cardLayout, rootPanel));
 
         JButton databaseButton = new JButton("Quan ly co so du lieu");
         databaseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -84,6 +90,54 @@ public class MainFrame extends JFrame {
         panel.add(Box.createVerticalGlue());
 
         return panel;
+    }
+
+    private void openManagementScreen(CardLayout cardLayout, JPanel rootPanel) {
+        if (!isDatabaseReady()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Chua thiet lap ket noi co so du lieu. Vui long vao \"Quan ly co so du lieu\" de cau hinh.",
+                    "Canh bao CSDL",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (!ensureManagementInitialized(cardLayout, rootPanel)) {
+            return;
+        }
+
+        cardLayout.show(rootPanel, MANAGEMENT_CARD);
+    }
+
+    private boolean isDatabaseReady() {
+        try (Connection ignored = DbConnection.getConnection()) {
+            return true;
+        } catch (SQLException ex) {
+            return false;
+        }
+    }
+
+    private boolean ensureManagementInitialized(CardLayout cardLayout, JPanel rootPanel) {
+        if (managementInitialized) {
+            return true;
+        }
+
+        try {
+            managementHost.add(createManagementPanel(cardLayout, rootPanel), BorderLayout.CENTER);
+            managementInitialized = true;
+            managementHost.revalidate();
+            managementHost.repaint();
+            return true;
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Chua the mo giao dien quan ly cua hang. Vui long kiem tra lai ket noi co so du lieu.",
+                    "Canh bao CSDL",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return false;
+        }
     }
 
     private JPanel createManagementPanel(CardLayout cardLayout, JPanel rootPanel) {

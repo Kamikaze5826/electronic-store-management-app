@@ -11,12 +11,12 @@ import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.electrostore.dao.DashboardDao;
 
 public class DashboardPanel extends JPanel {
+
     private final DashboardDao dashboardDao = new DashboardDao();
 
     private final JLabel productCountLabel = createValueLabel();
@@ -67,9 +67,12 @@ public class DashboardPanel extends JPanel {
             topCustomerLabel.setText(dashboardDao.topCustomerByTotalSpent());
             topProductLabel.setText(dashboardDao.topProductBySoldQuantity());
         } catch (Exception ex) {
-            Throwable cause = ex.getCause();
-            String detail = cause == null ? ex.getMessage() : cause.getMessage();
-            JOptionPane.showMessageDialog(this, "Khong tai duoc thong ke: " + detail);
+            productCountLabel.setText("--");
+            customerCountLabel.setText("--");
+            orderCountLabel.setText("--");
+            totalRevenueLabel.setText("--");
+            topCustomerLabel.setText("Chua co du lieu");
+            topProductLabel.setText("Chua co du lieu");
         }
     }
 
@@ -77,8 +80,8 @@ public class DashboardPanel extends JPanel {
         JPanel card = new JPanel(new GridLayout(2, 1));
         card.setBackground(Color.WHITE);
         card.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(220, 226, 235)),
-            BorderFactory.createEmptyBorder(12, 12, 12, 12)
+                BorderFactory.createLineBorder(new Color(220, 226, 235)),
+                BorderFactory.createEmptyBorder(12, 12, 12, 12)
         ));
         card.setPreferredSize(new Dimension(260, 140));
 
