@@ -137,7 +137,12 @@ public class ProductPanel extends JPanel {
             loadTable(productDao.findAll());
             return;
         }
-        loadTable(productDao.searchByKeyword(keyword));
+
+        List<Product> matchedProducts = productDao.searchByKeyword(keyword);
+        loadTable(matchedProducts);
+        if (matchedProducts.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Khong tim thay san pham phu hop");
+        }
     }
 
     private void insertProduct() {
