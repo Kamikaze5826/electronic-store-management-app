@@ -114,7 +114,7 @@ public class OrderPanel extends JPanel {
         line1.add(customerNameSearchField);
 
         JButton searchCustomerBtn = new JButton("Loc KH");
-        JButton clearCustomerFilterBtn = new JButton("Bo loc KH");
+        JButton clearCustomerFilterBtn = new JButton("Reset dieu kien KH");
         searchCustomerBtn.addActionListener(e -> applyCustomerFilter(true));
         clearCustomerFilterBtn.addActionListener(e -> {
             customerCodeSearchField.setText("");
@@ -133,7 +133,7 @@ public class OrderPanel extends JPanel {
         line2.add(productNameSearchField);
 
         JButton searchProductBtn = new JButton("Loc SP");
-        JButton clearProductFilterBtn = new JButton("Bo loc SP");
+        JButton clearProductFilterBtn = new JButton("Reset dieu kien SP");
         searchProductBtn.addActionListener(e -> applyProductFilter(true));
         clearProductFilterBtn.addActionListener(e -> {
             productCodeSearchField.setText("");
