@@ -12,6 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import com.electrostore.dao.DashboardDao;
 
@@ -29,7 +30,12 @@ public class DashboardPanel extends JPanel {
     public DashboardPanel() {
         setLayout(new BorderLayout(0, 16));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        setBackground(new Color(245, 247, 250));
+        setBackground(ModernTheme.BACKGROUND);
+
+        JLabel headerLabel = new JLabel("Tong quan hoat dong");
+        headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        headerLabel.setForeground(ModernTheme.TEXT_PRIMARY);
+        add(headerLabel, BorderLayout.NORTH);
 
         JPanel statsPanel = new JPanel(new GridLayout(3, 2, 16, 16));
         statsPanel.setOpaque(false);
@@ -42,6 +48,7 @@ public class DashboardPanel extends JPanel {
         add(statsPanel, BorderLayout.CENTER);
 
         JButton refreshBtn = new JButton("Lam moi thong ke");
+        ModernTheme.stylePrimaryButton(refreshBtn);
         refreshBtn.addActionListener(e -> refreshStats());
 
         JPanel buttonHost = new JPanel();
@@ -77,16 +84,14 @@ public class DashboardPanel extends JPanel {
     }
 
     private JPanel createCard(String title, JLabel valueLabel) {
-        JPanel card = new JPanel(new GridLayout(2, 1));
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(220, 226, 235)),
-                BorderFactory.createEmptyBorder(12, 12, 12, 12)
-        ));
+        JPanel card = new JPanel(new GridLayout(2, 1, 0, 8));
+        card.setBackground(ModernTheme.SURFACE);
+        card.setBorder(ModernTheme.createPanelBorder());
         card.setPreferredSize(new Dimension(260, 140));
 
         JLabel titleLabel = new JLabel(title);
-        titleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        titleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        titleLabel.setForeground(ModernTheme.TEXT_SECONDARY);
 
         card.add(titleLabel);
         card.add(valueLabel);
@@ -96,7 +101,9 @@ public class DashboardPanel extends JPanel {
 
     private JLabel createValueLabel() {
         JLabel label = new JLabel("0");
-        label.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        label.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        label.setForeground(new Color(10, 90, 84));
+        label.setHorizontalAlignment(SwingConstants.LEFT);
         return label;
     }
 }

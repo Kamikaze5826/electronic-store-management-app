@@ -50,13 +50,18 @@ public class ProductPanel extends JPanel {
         this.onDataChanged = onDataChanged;
         setLayout(new BorderLayout(12, 12));
         setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
+        setBackground(ModernTheme.BACKGROUND);
 
         add(buildFormPanel(), BorderLayout.NORTH);
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        JScrollPane tableScroll = new JScrollPane(table);
+        tableScroll.setBorder(ModernTheme.createPanelBorder());
+        add(tableScroll, BorderLayout.CENTER);
         add(buildBottomPanel(), BorderLayout.SOUTH);
 
         idField.setEditable(false);
+        styleInputs();
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        ModernTheme.styleTable(table);
         table.getSelectionModel().addListSelectionListener(e -> fillFormFromSelectedRow());
         table.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
@@ -74,6 +79,7 @@ public class ProductPanel extends JPanel {
 
     private JPanel buildFormPanel() {
         JPanel panel = new JPanel(new GridLayout(3, 4, 8, 8));
+        ModernTheme.styleSectionPanel(panel);
         panel.add(new JLabel("ID"));
         panel.add(idField);
         panel.add(new JLabel("Ten"));
@@ -93,10 +99,14 @@ public class ProductPanel extends JPanel {
 
     private JPanel buildBottomPanel() {
         JPanel panel = new JPanel(new BorderLayout(8, 8));
+        panel.setOpaque(false);
 
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        searchPanel.setOpaque(false);
         JButton searchBtn = new JButton("Tim");
         JButton clearSearchBtn = new JButton("Tat tim");
+        ModernTheme.stylePrimaryButton(searchBtn);
+        ModernTheme.styleSecondaryButton(clearSearchBtn);
 
         searchBtn.addActionListener(e -> doSearch());
         clearSearchBtn.addActionListener(e -> {
@@ -110,10 +120,15 @@ public class ProductPanel extends JPanel {
         searchPanel.add(clearSearchBtn);
 
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        actionPanel.setOpaque(false);
         JButton addBtn = new JButton("Them");
         JButton updateBtn = new JButton("Sua");
         JButton deleteBtn = new JButton("Xoa");
         JButton clearBtn = new JButton("Lam moi form");
+        ModernTheme.stylePrimaryButton(addBtn);
+        ModernTheme.styleSecondaryButton(updateBtn);
+        ModernTheme.styleSecondaryButton(deleteBtn);
+        ModernTheme.styleSecondaryButton(clearBtn);
 
         addBtn.addActionListener(e -> insertProduct());
         updateBtn.addActionListener(e -> updateProduct());
@@ -129,6 +144,16 @@ public class ProductPanel extends JPanel {
         panel.add(actionPanel, BorderLayout.EAST);
 
         return panel;
+    }
+
+    private void styleInputs() {
+        ModernTheme.styleInput(idField);
+        ModernTheme.styleInput(nameField);
+        ModernTheme.styleInput(brandField);
+        ModernTheme.styleInput(categoryField);
+        ModernTheme.styleInput(priceField);
+        ModernTheme.styleInput(stockField);
+        ModernTheme.styleInput(searchField);
     }
 
     private void doSearch() {

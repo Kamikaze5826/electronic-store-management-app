@@ -74,10 +74,12 @@ public class OrderPanel extends JPanel {
         this.onDataChanged = onDataChanged;
         setLayout(new BorderLayout(12, 12));
         setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
+        setBackground(ModernTheme.BACKGROUND);
 
         add(buildTopPanel(), BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel(new GridLayout(1, 2, 12, 12));
+        centerPanel.setOpaque(false);
         centerPanel.add(new JScrollPane(cartTable));
         centerPanel.add(new JScrollPane(recentOrderTable));
         add(centerPanel, BorderLayout.CENTER);
@@ -95,8 +97,18 @@ public class OrderPanel extends JPanel {
             }
         };
         currencyRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+        ModernTheme.styleTable(cartTable);
+        ModernTheme.styleTable(recentOrderTable);
         cartTable.getColumnModel().getColumn(3).setCellRenderer(currencyRenderer);
         cartTable.getColumnModel().getColumn(4).setCellRenderer(currencyRenderer);
+
+        ModernTheme.styleComboBox(customerCombo);
+        ModernTheme.styleComboBox(productCombo);
+        ModernTheme.styleInput(customerCodeSearchField);
+        ModernTheme.styleInput(customerNameSearchField);
+        ModernTheme.styleInput(productCodeSearchField);
+        ModernTheme.styleInput(productNameSearchField);
+        ModernTheme.styleSpinner(quantitySpinner);
 
         refreshData();
     }
@@ -104,8 +116,10 @@ public class OrderPanel extends JPanel {
     private JPanel buildTopPanel() {
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+        ModernTheme.styleSectionPanel(topPanel);
 
         JPanel line1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        line1.setOpaque(false);
         line1.add(new JLabel("Khach hang:"));
         line1.add(customerCombo);
         line1.add(new JLabel("Ma KH:"));
@@ -115,6 +129,8 @@ public class OrderPanel extends JPanel {
 
         JButton searchCustomerBtn = new JButton("Loc KH");
         JButton clearCustomerFilterBtn = new JButton("Reset dieu kien KH");
+        ModernTheme.stylePrimaryButton(searchCustomerBtn);
+        ModernTheme.styleSecondaryButton(clearCustomerFilterBtn);
         searchCustomerBtn.addActionListener(e -> applyCustomerFilter(true));
         clearCustomerFilterBtn.addActionListener(e -> {
             customerCodeSearchField.setText("");
@@ -125,6 +141,7 @@ public class OrderPanel extends JPanel {
         line1.add(clearCustomerFilterBtn);
 
         JPanel line2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        line2.setOpaque(false);
         line2.add(new JLabel("San pham:"));
         line2.add(productCombo);
         line2.add(new JLabel("Ma SP:"));
@@ -134,6 +151,8 @@ public class OrderPanel extends JPanel {
 
         JButton searchProductBtn = new JButton("Loc SP");
         JButton clearProductFilterBtn = new JButton("Reset dieu kien SP");
+        ModernTheme.stylePrimaryButton(searchProductBtn);
+        ModernTheme.styleSecondaryButton(clearProductFilterBtn);
         searchProductBtn.addActionListener(e -> applyProductFilter(true));
         clearProductFilterBtn.addActionListener(e -> {
             productCodeSearchField.setText("");
@@ -149,12 +168,16 @@ public class OrderPanel extends JPanel {
         JButton addItemBtn = new JButton("Them vao gio");
         JButton removeItemBtn = new JButton("Xoa hang duoc chon");
         JButton reloadBtn = new JButton("Tai lai du lieu");
+        ModernTheme.stylePrimaryButton(addItemBtn);
+        ModernTheme.styleSecondaryButton(removeItemBtn);
+        ModernTheme.styleSecondaryButton(reloadBtn);
 
         addItemBtn.addActionListener(e -> addItemToCart());
         removeItemBtn.addActionListener(e -> removeSelectedCartItem());
         reloadBtn.addActionListener(e -> refreshData());
 
         JPanel line3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        line3.setOpaque(false);
         line3.add(addItemBtn);
         line3.add(removeItemBtn);
         line3.add(reloadBtn);
@@ -173,15 +196,21 @@ public class OrderPanel extends JPanel {
 
     private JPanel buildBottomPanel() {
         JPanel bottomPanel = new JPanel(new BorderLayout());
+        ModernTheme.styleSectionPanel(bottomPanel);
         totalLabel.setText(vnCurrency.format(0));
+        totalLabel.setForeground(ModernTheme.PRIMARY_DARK);
 
         JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        left.setOpaque(false);
         left.add(new JLabel("Tong hoa don:"));
         left.add(totalLabel);
 
         JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        right.setOpaque(false);
         JButton saveOrderBtn = new JButton("Thanh toan / Luu hoa don");
         JButton clearCartBtn = new JButton("Xoa gio hang");
+        ModernTheme.stylePrimaryButton(saveOrderBtn);
+        ModernTheme.styleSecondaryButton(clearCartBtn);
 
         saveOrderBtn.addActionListener(e -> saveOrder());
         clearCartBtn.addActionListener(e -> clearCart());
