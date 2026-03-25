@@ -64,7 +64,7 @@ public final class ModernTheme {
         button.setBackground(SURFACE_ALT);
         button.setForeground(TEXT_PRIMARY);
         button.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(BORDER),
+                BorderFactory.createLineBorder(BORDER),
                 BorderFactory.createEmptyBorder(8, 14, 8, 14)
         ));
     }
