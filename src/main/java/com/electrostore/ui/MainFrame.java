@@ -146,9 +146,18 @@ public class MainFrame extends JFrame {
         JTabbedPane tabbedPane = new JTabbedPane();
 
         DashboardPanel dashboardPanel = new DashboardPanel();
-        ProductPanel productPanel = new ProductPanel(dashboardPanel::refreshStats);
-        CustomerPanel customerPanel = new CustomerPanel(dashboardPanel::refreshStats);
-        OrderPanel orderPanel = new OrderPanel(dashboardPanel::refreshStats);
+        final OrderPanel[] orderPanelRef = new OrderPanel[1];
+        Runnable onDataChanged = () -> {
+            dashboardPanel.refreshStats();
+            if (orderPanelRef[0] != null) {
+                orderPanelRef[0].refreshData();
+            }
+        };
+
+        ProductPanel productPanel = new ProductPanel(onDataChanged);
+        CustomerPanel customerPanel = new CustomerPanel(onDataChanged);
+        OrderPanel orderPanel = new OrderPanel(onDataChanged);
+        orderPanelRef[0] = orderPanel;
 
         tabbedPane.addTab("Tong quan", dashboardPanel);
         tabbedPane.addTab("San pham", productPanel);
