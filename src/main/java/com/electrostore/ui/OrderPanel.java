@@ -110,6 +110,10 @@ public class OrderPanel extends JPanel {
         ModernTheme.styleInput(productNameSearchField);
         ModernTheme.styleSpinner(quantitySpinner);
 
+        initializeData();
+    }
+
+    private void initializeData() {
         refreshData();
     }
 

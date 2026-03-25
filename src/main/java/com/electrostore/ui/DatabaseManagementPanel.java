@@ -65,20 +65,24 @@ public class DatabaseManagementPanel extends JPanel {
         JButton testDbButton = new JButton("Kiem tra ket noi CSDL");
         JButton saveConfigButton = new JButton("Luu cau hinh ket noi");
         JButton createDbButton = new JButton("Tao CSDL + bang");
+        JButton resetDbButton = new JButton("Reset CSDL (xoa het)");
         ModernTheme.styleSecondaryButton(testServerButton);
         ModernTheme.styleSecondaryButton(testDbButton);
         ModernTheme.stylePrimaryButton(saveConfigButton);
         ModernTheme.stylePrimaryButton(createDbButton);
+        ModernTheme.styleSecondaryButton(resetDbButton);
 
         testServerButton.addActionListener(e -> testServerConnection());
         testDbButton.addActionListener(e -> testDatabaseConnection());
         saveConfigButton.addActionListener(e -> saveConnectionConfig());
         createDbButton.addActionListener(e -> createDatabaseSchema());
+        resetDbButton.addActionListener(e -> resetDatabaseSchema());
 
         actionsPanel.add(testServerButton);
         actionsPanel.add(testDbButton);
         actionsPanel.add(saveConfigButton);
         actionsPanel.add(createDbButton);
+        actionsPanel.add(resetDbButton);
 
         logArea = new JTextArea();
         logArea.setEditable(false);
@@ -162,7 +166,8 @@ public class DatabaseManagementPanel extends JPanel {
             return;
         }
 
-        try (Connection ignored = DbConnection.getServerConnection(getHost(), getPort(), getUsername(), getPassword())) {
+        try (Connection connection = DbConnection.getServerConnection(getHost(), getPort(), getUsername(), getPassword())) {
+            connection.isValid(2);
             appendLog("Ket noi XAMPP MySQL thanh cong tai " + DatabaseConfig.buildRootUrl(getHost(), getPort()));
             JOptionPane.showMessageDialog(this, "Ket noi XAMPP thanh cong", "Thanh cong", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException ex) {
@@ -176,7 +181,8 @@ public class DatabaseManagementPanel extends JPanel {
             return;
         }
 
-        try (Connection ignored = DbConnection.getConnection(getHost(), getPort(), getDbName(), getUsername(), getPassword())) {
+        try (Connection connection = DbConnection.getConnection(getHost(), getPort(), getDbName(), getUsername(), getPassword())) {
+            connection.isValid(2);
             appendLog("Ket noi CSDL thanh cong: " + DatabaseConfig.buildDbUrl(getHost(), getPort(), getDbName()));
             JOptionPane.showMessageDialog(this, "Ket noi CSDL thanh cong", "Thanh cong", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException ex) {
@@ -198,6 +204,44 @@ public class DatabaseManagementPanel extends JPanel {
         } catch (RuntimeException ex) {
             appendLog("Tao CSDL that bai: " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Loi tao CSDL", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void resetDatabaseSchema() {
+        if (!validateForm()) {
+            return;
+        }
+
+        int firstConfirm = JOptionPane.showConfirmDialog(
+                this,
+                "Ban sap xoa toan bo du lieu trong CSDL \"" + getDbName() + "\". Tiep tuc?",
+                "Xac nhan reset CSDL",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+        if (firstConfirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        int secondConfirm = JOptionPane.showConfirmDialog(
+                this,
+                "Hanh dong nay KHONG the hoan tac. Ban chac chan muon xoa het du lieu?",
+                "Xac nhan lan 2",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.ERROR_MESSAGE
+        );
+        if (secondConfirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try {
+            DbInitializer.resetDatabase(getHost(), getPort(), getDbName(), getUsername(), getPassword());
+            DatabaseConfig.update(getHost(), getPort(), getDbName(), getUsername(), getPassword());
+            appendLog("Da reset CSDL thanh cong: " + getDbName() + " (da xoa het du lieu va tao lai bang)");
+            JOptionPane.showMessageDialog(this, "Reset CSDL thanh cong", "Thanh cong", JOptionPane.INFORMATION_MESSAGE);
+        } catch (RuntimeException ex) {
+            appendLog("Reset CSDL that bai: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Loi reset CSDL", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

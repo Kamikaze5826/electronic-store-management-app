@@ -74,4 +74,25 @@ public final class DbInitializer {
             throw new RuntimeException("Khong the khoi tao CSDL: " + e.getMessage(), e);
         }
     }
+
+        public static void resetDatabase(String host, String port, String dbName, String username, String password) {
+                String safeDbName = validateDbName(dbName);
+                try (Connection connection = DbConnection.getServerConnection(host, port, username, password); Statement statement = connection.createStatement()) {
+                        statement.executeUpdate("DROP DATABASE IF EXISTS `" + safeDbName + "`");
+                } catch (SQLException e) {
+                        throw new RuntimeException("Khong the xoa CSDL: " + e.getMessage(), e);
+                }
+
+                initialize(host, port, dbName, username, password);
+        }
+
+        private static String validateDbName(String dbName) {
+                if (dbName == null || dbName.isBlank()) {
+                        throw new RuntimeException("Ten CSDL khong hop le");
+                }
+                if (!dbName.matches("[A-Za-z0-9_]+")) {
+                        throw new RuntimeException("Ten CSDL chi duoc chua chu, so va dau gach duoi");
+                }
+                return dbName;
+        }
 }
