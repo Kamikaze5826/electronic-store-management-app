@@ -115,11 +115,11 @@ public class OrderPanel extends JPanel {
 
         JButton searchCustomerBtn = new JButton("Loc KH");
         JButton clearCustomerFilterBtn = new JButton("Bo loc KH");
-        searchCustomerBtn.addActionListener(e -> applyCustomerFilter());
+        searchCustomerBtn.addActionListener(e -> applyCustomerFilter(true));
         clearCustomerFilterBtn.addActionListener(e -> {
             customerCodeSearchField.setText("");
             customerNameSearchField.setText("");
-            applyCustomerFilter();
+            applyCustomerFilter(false);
         });
         line1.add(searchCustomerBtn);
         line1.add(clearCustomerFilterBtn);
@@ -134,11 +134,11 @@ public class OrderPanel extends JPanel {
 
         JButton searchProductBtn = new JButton("Loc SP");
         JButton clearProductFilterBtn = new JButton("Bo loc SP");
-        searchProductBtn.addActionListener(e -> applyProductFilter());
+        searchProductBtn.addActionListener(e -> applyProductFilter(true));
         clearProductFilterBtn.addActionListener(e -> {
             productCodeSearchField.setText("");
             productNameSearchField.setText("");
-            applyProductFilter();
+            applyProductFilter(false);
         });
         line2.add(searchProductBtn);
         line2.add(clearProductFilterBtn);
@@ -196,37 +196,49 @@ public class OrderPanel extends JPanel {
     private void reloadCombos() {
         allCustomers = orderService.getCustomers();
         allProducts = orderService.getInStockProducts();
-        applyCustomerFilter();
-        applyProductFilter();
+        applyCustomerFilter(false);
+        applyProductFilter(false);
     }
 
-    private void applyCustomerFilter() {
+    private void applyCustomerFilter(boolean showNotFoundMessage) {
         String customerCodeKeyword = customerCodeSearchField.getText().trim();
         String customerNameKeyword = customerNameSearchField.getText().trim().toLowerCase();
 
         customerCombo.removeAllItems();
+        int matchedCount = 0;
         for (Customer c : allCustomers) {
             boolean matchedCode = customerCodeKeyword.isEmpty() || String.valueOf(c.getId()).contains(customerCodeKeyword);
             boolean matchedName = customerNameKeyword.isEmpty() || c.getFullName().toLowerCase().contains(customerNameKeyword);
             boolean matched = matchedCode && matchedName;
             if (matched) {
                 customerCombo.addItem(c);
+                matchedCount++;
             }
+        }
+
+        if (showNotFoundMessage && matchedCount == 0) {
+            JOptionPane.showMessageDialog(this, "Khong tim thay khach hang phu hop");
         }
     }
 
-    private void applyProductFilter() {
+    private void applyProductFilter(boolean showNotFoundMessage) {
         String productCodeKeyword = productCodeSearchField.getText().trim();
         String productNameKeyword = productNameSearchField.getText().trim().toLowerCase();
 
         productCombo.removeAllItems();
+        int matchedCount = 0;
         for (Product p : allProducts) {
             boolean matchedCode = productCodeKeyword.isEmpty() || String.valueOf(p.getId()).contains(productCodeKeyword);
             boolean matchedName = productNameKeyword.isEmpty() || p.getName().toLowerCase().contains(productNameKeyword);
             boolean matched = matchedCode && matchedName;
             if (matched) {
                 productCombo.addItem(p);
+                matchedCount++;
             }
+        }
+
+        if (showNotFoundMessage && matchedCount == 0) {
+            JOptionPane.showMessageDialog(this, "Khong tim thay san pham phu hop");
         }
     }
 
