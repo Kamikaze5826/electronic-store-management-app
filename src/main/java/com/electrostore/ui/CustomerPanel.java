@@ -78,16 +78,22 @@ public class CustomerPanel extends JPanel {
         this.onDataChanged = onDataChanged;
         setLayout(new BorderLayout(12, 12));
         setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
+        setBackground(ModernTheme.BACKGROUND);
 
         add(buildFormPanel(), BorderLayout.NORTH);
 
         JSplitPane centerSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(table), buildHistoryPanel());
         centerSplit.setResizeWeight(0.52);
+        centerSplit.setBorder(BorderFactory.createLineBorder(ModernTheme.BORDER));
         add(centerSplit, BorderLayout.CENTER);
 
         add(buildBottomPanel(), BorderLayout.SOUTH);
 
         idField.setEditable(false);
+        styleInputs();
+        ModernTheme.styleTable(table);
+        ModernTheme.styleTable(orderHistoryTable);
+        ModernTheme.styleTable(invoiceDetailTable);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -108,6 +114,7 @@ public class CustomerPanel extends JPanel {
 
     private JPanel buildFormPanel() {
         JPanel panel = new JPanel(new GridLayout(3, 4, 8, 8));
+        ModernTheme.styleSectionPanel(panel);
         panel.add(new JLabel("ID"));
         panel.add(idField);
         panel.add(new JLabel("Ho ten"));
@@ -126,11 +133,14 @@ public class CustomerPanel extends JPanel {
 
     private JPanel buildHistoryPanel() {
         JPanel panel = new JPanel(new BorderLayout(8, 8));
+        ModernTheme.styleSectionPanel(panel);
 
         JPanel top = new JPanel(new BorderLayout());
+        top.setOpaque(false);
         top.add(historySummaryLabel, BorderLayout.WEST);
 
         JPanel invoicePanel = new JPanel(new BorderLayout(8, 8));
+        invoicePanel.setOpaque(false);
         invoicePanel.add(invoiceSummaryLabel, BorderLayout.NORTH);
         invoicePanel.add(new JScrollPane(invoiceDetailTable), BorderLayout.CENTER);
 
@@ -144,10 +154,14 @@ public class CustomerPanel extends JPanel {
 
     private JPanel buildBottomPanel() {
         JPanel panel = new JPanel(new BorderLayout(8, 8));
+        panel.setOpaque(false);
 
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        searchPanel.setOpaque(false);
         JButton searchBtn = new JButton("Tim");
         JButton clearSearchBtn = new JButton("Tat tim");
+        ModernTheme.stylePrimaryButton(searchBtn);
+        ModernTheme.styleSecondaryButton(clearSearchBtn);
 
         searchBtn.addActionListener(e -> doSearch());
         clearSearchBtn.addActionListener(e -> {
@@ -161,10 +175,15 @@ public class CustomerPanel extends JPanel {
         searchPanel.add(clearSearchBtn);
 
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        actionPanel.setOpaque(false);
         JButton addBtn = new JButton("Them");
         JButton updateBtn = new JButton("Sua");
         JButton deleteBtn = new JButton("Xoa");
         JButton clearBtn = new JButton("Lam moi form");
+        ModernTheme.stylePrimaryButton(addBtn);
+        ModernTheme.styleSecondaryButton(updateBtn);
+        ModernTheme.styleSecondaryButton(deleteBtn);
+        ModernTheme.styleSecondaryButton(clearBtn);
 
         addBtn.addActionListener(e -> insertCustomer());
         updateBtn.addActionListener(e -> updateCustomer());
@@ -179,6 +198,15 @@ public class CustomerPanel extends JPanel {
         panel.add(searchPanel, BorderLayout.WEST);
         panel.add(actionPanel, BorderLayout.EAST);
         return panel;
+    }
+
+    private void styleInputs() {
+        ModernTheme.styleInput(idField);
+        ModernTheme.styleInput(fullNameField);
+        ModernTheme.styleInput(phoneField);
+        ModernTheme.styleInput(emailField);
+        ModernTheme.styleInput(addressField);
+        ModernTheme.styleInput(searchField);
     }
 
     private void doSearch() {

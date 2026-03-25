@@ -2,6 +2,8 @@ package com.electrostore.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -35,8 +37,10 @@ public class DatabaseManagementPanel extends JPanel {
     public DatabaseManagementPanel() {
         setLayout(new BorderLayout(12, 12));
         setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
+        setBackground(ModernTheme.BACKGROUND);
 
         JPanel formPanel = new JPanel(new GridBagLayout());
+        ModernTheme.styleSectionPanel(formPanel);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(6, 6, 6, 6);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -55,10 +59,16 @@ public class DatabaseManagementPanel extends JPanel {
         addRow(formPanel, gbc, row++, "Mat khau", passwordField);
 
         JPanel actionsPanel = new JPanel();
+        actionsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 8));
+        actionsPanel.setOpaque(false);
         JButton testServerButton = new JButton("Kiem tra ket noi XAMPP");
         JButton testDbButton = new JButton("Kiem tra ket noi CSDL");
         JButton saveConfigButton = new JButton("Luu cau hinh ket noi");
         JButton createDbButton = new JButton("Tao CSDL + bang");
+        ModernTheme.styleSecondaryButton(testServerButton);
+        ModernTheme.styleSecondaryButton(testDbButton);
+        ModernTheme.stylePrimaryButton(saveConfigButton);
+        ModernTheme.stylePrimaryButton(createDbButton);
 
         testServerButton.addActionListener(e -> testServerConnection());
         testDbButton.addActionListener(e -> testDatabaseConnection());
@@ -74,9 +84,17 @@ public class DatabaseManagementPanel extends JPanel {
         logArea.setEditable(false);
         logArea.setLineWrap(true);
         logArea.setWrapStyleWord(true);
+        logArea.setFont(new Font("Consolas", Font.PLAIN, 13));
+        logArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         JScrollPane logScrollPane = new JScrollPane(logArea);
         logScrollPane.setPreferredSize(new Dimension(600, 220));
         logScrollPane.setBorder(BorderFactory.createTitledBorder("Nhat ky thao tac"));
+
+        ModernTheme.styleInput(hostField);
+        ModernTheme.styleInput(portField);
+        ModernTheme.styleInput(dbNameField);
+        ModernTheme.styleInput(usernameField);
+        ModernTheme.styleInput(passwordField);
 
         add(formPanel, BorderLayout.NORTH);
         add(actionsPanel, BorderLayout.CENTER);
@@ -87,7 +105,9 @@ public class DatabaseManagementPanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = row;
         gbc.weightx = 0;
-        formPanel.add(new JLabel(labelText + ":"), gbc);
+        JLabel label = new JLabel(labelText + ":");
+        label.setForeground(ModernTheme.TEXT_SECONDARY);
+        formPanel.add(label, gbc);
 
         gbc.gridx = 1;
         gbc.weightx = 1;
